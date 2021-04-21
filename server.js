@@ -3,70 +3,68 @@ const fs = require('fs');
 const path = require('path');
 const notes = require('./db/db.json');
 const express = require('express');
+const generateuniqueId = require('generate-unique-id');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('', (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
+// middleware function to serve css
+app.use(express.static('public'));
 
-app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, 'public/notes.html')));
-
-
-// get saved notes and join to db.json
-app.get('/api/notes', (req, res) => {
-    res.sendFile(path.join(__dirname, '/db/db.json'))
+// package to generate unique id for new note obj
+const id = generateuniqueId({
+    useLetters: false,
+    useNumbers: true,
+    length: 10
 })
 
-// add new notes to db.json using post
+// read (get) '' and join to display index.html at localhost:3000/
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/index.html'))
+});
+
+// read (get) /notes and join to display notes.html at localhost:3000/notes
+app.get('/notes', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/notes.html'))
+});
+
+app.get('/api/notes', (req, res) => {
+    res.json(notes)
+})
+
+// add new notes to db.json with post method
 app.post('/api/notes', (req, res) => {
-    const notes = fs.readFile('/db/db.json')
+    // set required db.json file to variable
+    const db = require('./db/db.json')
     const newNote = req.body;
-    // use RegEx to remove spaces for route name 
-    newNote.routeName = newNote.name.replace(/\s+/g, '').toLowerCase();
-    console.log(newNote);
-    // push new notes to notes and return new note obj
-    notes.push(newNote);
-    res.json(newNote);
+    // give each new note an id
+    newNote.id = db.length;
+    // add new notes to db
+    db.push(newNote);
+    // put new updated array to db.json
+    fs.writeFile('./db/db.json', JSON.stringify(db), (err) => {
+        if (err) throw err;
+    })
+    return res.json(newNote)
+})
+
+// delete saved notes with delete method
+app.delete('/api/notes/:id', (req, res) => {
+    const db = require('./db/db.json');
+    // filter through db and return new array
+    const newNoteArr = db.filter(item => {
+        return JSON.parse(req.params.id) !== item.id
+    })
+    // put new updated array to db.json
+    fs.writeFile('./db/db.json', JSON.stringify(newNoteArr), (err) => {
+        if (err) throw err;
+    })
+    return res.json(req.params.id)
 })
 
 app.listen(PORT, () => {
     console.log(`Server is listening on PORT: ${PORT}`)
 })
-
-// const handleRequest = (req, res) => {
-//     const path = req.url;
-
-//     switch (path) {
-//         case '/':
-//             return fs.readFile(`${__dirname}/public/index.html`, (err, data) => {
-//                 if (err) throw err;
-//                 res.writeHead(200, { 'Content-Type':'text/html' })
-//                 res.end(data);
-//             })
-        
-//         case '/notes': 
-//             return fs.readFile($`${__dirname}/public/notes.html`, (err, data) => {
-//                 if (err) throw err;
-//                 res.writeHead(200, { 'Content-Type':'text/html '})
-//                 res.end(data);
-//             })
-        
-//         // renders index.html if none of the above cases are hit
-//         default:
-//             return fs.readFile(`${__dirname}/public/index.html`, (err, data) => {
-//                 if (err) throw err;
-//                 res.writeHead(200, { 'Content-Type':'text/html' })
-//                 res.end(data);
-//         })
-//     }
-// };
-
-    
-// const server = http.createServer(handleRequest);
-
-// server.listen(PORT, () => {
-// console.log(`Server is listening on PORT: ${PORT}`)
-// });
