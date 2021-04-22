@@ -1,5 +1,4 @@
 const http = require('http');
-// const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const fs = require("fs")
@@ -33,15 +32,12 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', async(req, res) => {
-    // const notes = require('./db/db.json');
     const notes = await readFile();
     res.json(notes)
 })
 
 // add new notes to db.json with post method
 app.post('/api/notes', async(req, res) => {
-    // set required db.json file to variable
-    // const db = require('./db/db.json')
     const db = await readFile();
     const newNote = req.body;
     // give each new note an id
@@ -57,7 +53,6 @@ app.post('/api/notes', async(req, res) => {
 
 // delete saved notes with delete method
 app.delete('/api/notes/:id', async(req, res) => {
-    // const db = require('./db/db.json');
     const db = await readFile();
     // filter through db and return new array
     const newNoteArr = db.filter(item => {
