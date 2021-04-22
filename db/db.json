@@ -1,1 +1,1 @@
-[{"title":"Test Title","text":"Test text"},{"title":"Testing Notes","text":"Adding test note!","id":1},{"title":"Testing Notes 2","text":"Add test note again!","id":2},{"title":"Hello World","text":"Hello! Take notes with express.js note taker! ","id":3}]
+[{"title":"Test Title","text":"Test text"},{"title":"Testing notes","text":"test note","id":1},{"title":"Testing notes 2","text":"add test note!","id":2}]

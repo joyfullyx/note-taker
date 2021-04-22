@@ -15,11 +15,11 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // package to generate unique id for new note obj
-const id = generateuniqueId({
-    useLetters: false,
-    useNumbers: true,
-    length: 10
-})
+// const id = generateuniqueId({
+//     useLetters: false,
+//     useNumbers: true,
+//     length: 10
+// })
 
 // read (get) '' and join to display index.html at localhost:3000/
 app.get('/', (req, res) => {
@@ -54,10 +54,13 @@ app.post('/api/notes', (req, res) => {
 // delete saved notes with delete method
 app.delete('/api/notes/:id', (req, res) => {
     const db = require('./db/db.json');
+    console.log('logging db',db)
     // filter through db and return new array
     const newNoteArr = db.filter(item => {
         return JSON.parse(req.params.id) !== item.id
+        
     })
+    console.log('logging newnotearr',newNoteArr)
     // put new updated array to db.json
     fs.writeFile('./db/db.json', JSON.stringify(newNoteArr), (err) => {
         if (err) throw err;
