@@ -1,9 +1,9 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const notes = require('./db/db.json');
+// const notes = require('./db/db.json');
 const express = require('express');
-const generateuniqueId = require('generate-unique-id');
+// const generateuniqueId = require('generate-unique-id');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,6 +32,7 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
+    const notes = require('./db/db.json');
     res.json(notes)
 })
 
@@ -64,8 +65,8 @@ app.delete('/api/notes/:id', (req, res) => {
     // put new updated array to db.json
     fs.writeFile('./db/db.json', JSON.stringify(newNoteArr), (err) => {
         if (err) throw err;
+        return res.json(req.params.id)
     })
-    return res.json(req.params.id)
 })
 
 app.listen(PORT, () => {
