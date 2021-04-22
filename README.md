@@ -25,6 +25,10 @@ The note taker application is an easy way for users to add, save, and delete not
 ## Link to deployed site
 Click [here](https://joys-note-taker.herokuapp.com/) to visit the live application. 
 
+![home-screen](https://raw.githubusercontent.com/joyfullyx/note-taker/main/images/home-screen.png)
+![add-notes](https://raw.githubusercontent.com/joyfullyx/note-taker/main/images/add-note.png)
+![saved-note](https://raw.githubusercontent.com/joyfullyx/note-taker/main/images/saved-note.png)
+
 ## License
 
 License: MIT
