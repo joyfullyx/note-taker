@@ -22,6 +22,9 @@ A note taking application made using express.js that can be used to write and sa
 ## Usage
 The note taker application is an easy way for users to add, save, and delete notes. Saved notes can be accessed by clicking on the title of the note on the side bar, and can be deleted by double clicking the delete button. Users can also use the pen icon at the top right to write new notes. Notes can only be saved if there is text content in the  `note text` area below the title. 
 
+## Link to deployed site
+Click [here](https://joys-note-taker.herokuapp.com/) to visit the live application. 
+
 ## License
 
 License: MIT
