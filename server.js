@@ -1,8 +1,18 @@
 const http = require('http');
-const fs = require('fs');
+// const fs = require('fs');
 const path = require('path');
 const express = require('express');
-
+const fs = require("fs")
+const util = require("util")
+const readFilePromise = util.promisify(fs.readFile)
+/**
+ *   readFile - reads db.json
+ * @returns a parsed array of character objects
+ */
+const readFile = async () => {
+  let data = await readFilePromise("./db/db.json", "utf8")
+  return JSON.parse(data)
+}
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -22,15 +32,17 @@ app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/notes.html'))
 });
 
-app.get('/api/notes', (req, res) => {
-    const notes = require('./db/db.json');
+app.get('/api/notes', async(req, res) => {
+    // const notes = require('./db/db.json');
+    const notes = await readFile();
     res.json(notes)
 })
 
 // add new notes to db.json with post method
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', async(req, res) => {
     // set required db.json file to variable
-    const db = require('./db/db.json')
+    // const db = require('./db/db.json')
+    const db = await readFile();
     const newNote = req.body;
     // give each new note an id
     newNote.id = db.length;
@@ -44,8 +56,9 @@ app.post('/api/notes', (req, res) => {
 })
 
 // delete saved notes with delete method
-app.delete('/api/notes/:id', (req, res) => {
-    const db = require('./db/db.json');
+app.delete('/api/notes/:id', async(req, res) => {
+    // const db = require('./db/db.json');
+    const db = await readFile();
     // filter through db and return new array
     const newNoteArr = db.filter(item => {
         return JSON.parse(req.params.id) !== item.id
@@ -55,6 +68,7 @@ app.delete('/api/notes/:id', (req, res) => {
         if (err) throw err;
         return res.json(req.params.id)
     })
+    console.log('logging',db)
 })
 
 app.listen(PORT, () => {
